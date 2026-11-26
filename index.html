@@ -36,7 +36,11 @@ footer{text-align:center;padding:25px;color:#8295ad}
 <h2>Canlı televiziya</h2>
 <div class="player">
 <h3 id="playing">Kanal seçin</h3>
-<iframe id="screen" allowfullscreen></iframe>
+<iframe
+id="screen"
+allow="autoplay; encrypted-media; picture-in-picture"
+allowfullscreen>
+</iframe>
 <p id="status">İzləmək istədiyiniz kanalı seçin.</p>
 </div>
 
@@ -56,7 +60,7 @@ footer{text-align:center;padding:25px;color:#8295ad}
 
 <script>
 const data=[
-{name:"AzTV",country:"Azərbaycan",url:"https://aztv.az/az/live"},
+{name:"AzTV",country:"Azərbaycan",url:"https://www.youtube.com/embed/live_stream?channel=UCVf7OL0jKiO1OMHN_qaNf0w"},
 {name:"İTV",country:"Azərbaycan",url:""},
 {name:"CBC Sport",country:"Azərbaycan",url:""},
 {name:"ATV",country:"Azərbaycan",url:""},
@@ -77,11 +81,14 @@ showChannels();
 }
 function play(channel){
   document.getElementById("playing").textContent=channel.name;
+
   if(channel.url){
-    window.open(channel.url,"_blank");
-    document.getElementById("status").textContent="Rəsmi yayım açılır.";
+    document.getElementById("screen").src=channel.url;
+    document.getElementById("status").textContent=
+    "Canlı yayım yüklənir...";
   }else{
-    document.getElementById("status").textContent="Yayım ünvanı əlavə edilməyib.";
+    document.getElementById("status").textContent=
+    "Bu kanalın yayım ünvanı əlavə edilməyib.";
   }
 }
 function showChannels(){
