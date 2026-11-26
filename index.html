@@ -59,58 +59,70 @@ allowfullscreen>
 <footer>PLUS TV © 2026<br>Online Television Platform</footer>
 
 <script>
-const data=[
-{name:"AzTV",country:"Azərbaycan",url:"https://aztv.az/az/live"}, 
+<script>
+const data = [
+{name:"AzTV",country:"Azərbaycan",url:""},
 {name:"İTV",country:"Azərbaycan",url:""},
 {name:"CBC Sport",country:"Azərbaycan",url:""},
 {name:"ATV",country:"Azərbaycan",url:""},
 {name:"Space TV",country:"Azərbaycan",url:""},
+{name:"Xəzər TV",country:"Azərbaycan",url:""},
+{name:"ARB",country:"Azərbaycan",url:""},
+{name:"Mədəniyyət TV",country:"Azərbaycan",url:""},
 {name:"TRT 1",country:"Türkiyə",url:""},
 {name:"TRT Haber",country:"Türkiyə",url:""},
 {name:"Kanal D",country:"Türkiyə",url:""},
 {name:"TRT 2",country:"Türkiyə",url:""},
 {name:"Россия 1",country:"Rusiya",url:""},
 {name:"РБК",country:"Rusiya",url:""},
-{name:"Россия 24",country:"Rusiya",url:""}, 
- {name:"Xəzər TV",country:"Azərbaycan",url:""},
-{name:"ARB",country:"Azərbaycan",url:""},
-{name:"Mədəniyyət TV",country:"Azərbaycan",url:""},];
-let selected="Hamısı";
+{name:"Россия 24",country:"Rusiya",url:""}
+];
+
+let selected = "Hamısı";
 
 function filter(country){
-selected=country;
-showChannels();
+  selected = country;
+  showChannels();
 }
-function play(channel){
-  document.getElementById("playing").textContent=channel.name;
 
-  if(channel.url){
-    document.getElementById("screen").src=channel.url;
-    document.getElementById("status").textContent=
-    "Canlı yayım yüklənir...";
-  }else{
-    document.getElementById("status").textContent=
-    "Bu kanalın yayım ünvanı əlavə edilməyib.";
-  }
+function play(channel){
+  document.getElementById("playing").textContent = channel.name;
+  document.getElementById("status").textContent =
+    "Bu kanal üçün rəsmi canlı yayım ünvanı əlavə edilməyib.";
 }
+
 function showChannels(){
-let q=document.getElementById("search").value.toLowerCase();
-let list=data.filter(c=>
-(selected==="Hamısı"||c.country===selected)&&
-c.name.toLowerCase().includes(q)
-);
-document.getElementById("channels").innerHTML="";
-list.forEach(c=>{
-let div=document.createElement("div");
-div.className="channel";
-div.innerHTML=`<h3>${c.name}</h3>
-<p>${c.country}</p>
-<button>${c.url?"Canlı izlə":"Hazırlanır"}</button>`;
-div.querySelector("button").disabled=!c.url;
-div.querySelector("button").onclick=()=>play(c);
-document.getElementById("channels").appendChild(div);
-});
+  const q = document.getElementById("search").value.toLowerCase();
+  const list = data.filter(c =>
+    (selected === "Hamısı" || c.country === selected) &&
+    c.name.toLowerCase().includes(q)
+  );
+
+  const area = document.getElementById("channels");
+  area.innerHTML = "";
+
+  list.forEach(c => {
+    const div = document.createElement("div");
+    div.className = "channel";
+
+    const name = document.createElement("h3");
+    name.textContent = c.name;
+
+    const country = document.createElement("p");
+    country.textContent = c.country;
+
+    const btn = document.createElement("button");
+    btn.textContent = "Canlı izlə";
+    btn.onclick = () => play(c);
+
+    div.appendChild(name);
+    div.appendChild(country);
+    div.appendChild(btn);
+    area.appendChild(div);
+  });
 }
+
+document.getElementById("search").addEventListener("input", showChannels);
 showChannels();
 </script>
 </body>
