@@ -85,13 +85,33 @@ function filter(country){
 let hlsPlayer = null;
 
 function play(channel){
+  const video = document.getElementById("screen");
   document.getElementById("playing").textContent = channel.name;
 
-  if(channel.name === "İTV"){
-    window.open("https://itv.az/", "_blank");
-  } else {
+  if(hlsPlayer){
+    hlsPlayer.destroy();
+    hlsPlayer = null;
+  }
+
+  video.removeAttribute("src");
+  video.load();
+
+  if(!channel.url){
     document.getElementById("status").textContent =
-      "Bu kanal üçün yayım ünvanı əlavə edilməyib.";
+      "Canlı yayım ünvanı əlavə edilməyib.";
+    return;
+  }
+
+  if(Hls.isSupported()){
+    hlsPlayer = new Hls();
+    hlsPlayer.loadSource(channel.url);
+    hlsPlayer.attachMedia(video);
+    hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function(){
+      video.play();
+    });
+  } else if(video.canPlayType("application/vnd.apple.mpegurl")){
+    video.src = channel.url;
+    video.play();
   }
 }
 
