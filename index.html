@@ -75,19 +75,15 @@ function filter(country){
 selected=country;
 showChannels();
 }
-
 function play(channel){
-document.getElementById("playing").textContent=channel.name;
-if(channel.url){
-document.getElementById("screen").src=channel.url;
-document.getElementById("status").textContent=
-"Rəsmi yayım səhifəsi açılır. Daxili pleyerdə göstərilməsi yayım saytının icazəsindən asılıdır.";
-}else{
-document.getElementById("status").textContent=
-"Bu kanalın rəsmi canlı yayım ünvanı hələ əlavə edilməyib.";
+  document.getElementById("playing").textContent=channel.name;
+  if(channel.url){
+    window.open(channel.url,"_blank");
+    document.getElementById("status").textContent="Rəsmi yayım açılır.";
+  }else{
+    document.getElementById("status").textContent="Yayım ünvanı əlavə edilməyib.";
+  }
 }
-}
-
 function showChannels(){
 let q=document.getElementById("search").value.toLowerCase();
 let list=data.filter(c=>
