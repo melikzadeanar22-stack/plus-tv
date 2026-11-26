@@ -3,113 +3,107 @@
 <html lang="az">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PLUS TV</title>
 <style>
 *{box-sizing:border-box}
-body{
- margin:0;background:#080d18;color:white;
- font-family:Arial,sans-serif;
-}
-header{
- background:#111b2c;padding:20px;
- display:flex;justify-content:space-between;
- align-items:center;border-bottom:1px solid #26354c;
-}
-.logo{font-size:27px;font-weight:bold;color:#29b6ff}
-.logo span{color:white}
-.container{padding:18px}
-h2{font-size:21px}
-.hero{
- background:linear-gradient(135deg,#123e70,#101a30);
- padding:25px;border-radius:16px;
- margin:15px 0 25px;
-}
+body{margin:0;background:#080d18;color:white;font-family:Arial}
+header{background:#111b2c;padding:20px;font-size:25px;font-weight:bold}
+header span{color:#42baff}
+.container{padding:16px}
+.hero{background:linear-gradient(135deg,#123e70,#111b2c);padding:25px;border-radius:18px}
 .hero h1{font-size:27px}
-.hero p{color:#c4d4e8;line-height:1.5}
-button{
- background:#078cdb;color:white;border:0;
- padding:13px 20px;border-radius:9px;
- font-size:15px;font-weight:bold;
-}
-.channels{
- display:grid;grid-template-columns:1fr 1fr;gap:13px;
-}
-.channel{
- background:#141e30;border:1px solid #26364c;
- border-radius:13px;padding:17px;text-align:center;
-}
-.channel .icon{font-size:34px;margin-bottom:12px}
-.channel h3{margin:5px}
-.channel p{font-size:12px;color:#9eacc0}
-.channel button{width:100%;padding:10px}
-.status{color:#43d99b;font-size:12px}
-.subscribe{
- margin-top:25px;padding:20px;
- background:#142a43;border-radius:15px;
-}
-.subscribe h2{color:#42baff}
-footer{
- text-align:center;color:#8190a5;
- padding:25px;font-size:13px;
-}
-a{text-decoration:none}
+input{width:100%;padding:14px;border-radius:10px;border:1px solid #34445b;background:#18243a;color:white;margin:15px 0}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+button{background:#087fca;color:white;border:0;padding:12px 16px;border-radius:9px;font-weight:bold}
+button:disabled{background:#465266;color:#bbb}
+.player{background:#111b2c;padding:12px;border-radius:14px;margin:20px 0}
+iframe{width:100%;height:240px;border:0;background:#000;border-radius:10px}
+.channels{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.channel{background:#172238;padding:16px;border-radius:13px;text-align:center}
+.channel h3{margin:10px 0}
+footer{text-align:center;padding:25px;color:#8295ad}
 </style>
 </head>
 <body>
-
-<header>
- <div class="logo">PLUS <span>TV</span></div>
- <div>📺 Online TV</div>
-</header>
-
+<header>PLUS <span>TV</span></header>
 <div class="container">
-
 <div class="hero">
- <h1>PLUS TV-yə xoş gəlmisiniz!</h1>
- <p>Sevdiyiniz televiziya kanallarını bir platformada izləyin.</p>
- <button onclick="document.getElementById('kanallar').scrollIntoView()">
- Kanallara bax
- </button>
+<h1>PLUS TV-yə xoş gəlmisiniz!</h1>
+<p>Azərbaycan, Türkiyə və Rusiya kanalları bir platformada.</p>
 </div>
 
-<h2 id="kanallar">📡 Televiziya kanalları</h2>
-
-<div class="channels">
-
-<div class="channel">
- <div class="icon">📺</div>
- <h3>AzTV</h3>
- <p class="status">● Rəsmi canlı yayım</p>
- <a href="https://aztv.az/az/live" target="_blank">
- <button>Canlı izlə</button>
- </a>
+<h2>Canlı televiziya</h2>
+<div class="player">
+<h3 id="playing">Kanal seçin</h3>
+<iframe id="screen" allowfullscreen></iframe>
+<p id="status">İzləmək istədiyiniz kanalı seçin.</p>
 </div>
 
-<div class="channel">
- <div class="icon">📡</div>
- <h3>Yeni kanallar</h3>
- <p>Tezliklə əlavə olunacaq</p>
- <button disabled>Hazırlanır</button>
+<input id="search" placeholder="Kanal axtar..." oninput="showChannels()">
+
+<div class="filters">
+<button onclick="filter('Hamısı')">Hamısı</button>
+<button onclick="filter('Azərbaycan')">Azərbaycan</button>
+<button onclick="filter('Türkiyə')">Türkiyə</button>
+<button onclick="filter('Rusiya')">Rusiya</button>
 </div>
 
+<div class="channels" id="channels"></div>
 </div>
 
-<div class="subscribe">
- <h2>PLUS TV Abunəliyi</h2>
- <p>Aylıq abunəlik sistemi</p>
- <p>Aktiv abunəçilər üçün dəstəklənən kanallara limitsiz baxış.</p>
- <button onclick="alert('Abunəlik sistemi hazırlanır.')">
- Abunə ol
- </button>
-</div>
+<footer>PLUS TV © 2026<br>Online Television Platform</footer>
 
-</div>
+<script>
+const data=[
+{name:"AzTV",country:"Azərbaycan",url:"https://aztv.az/az/live"},
+{name:"İTV",country:"Azərbaycan",url:""},
+{name:"CBC Sport",country:"Azərbaycan",url:""},
+{name:"TRT 1",country:"Türkiyə",url:""},
+{name:"TRT Haber",country:"Türkiyə",url:""},
+{name:"Kanal D",country:"Türkiyə",url:""},
+{name:"Россия 1",country:"Rusiya",url:""},
+{name:"РБК",country:"Rusiya",url:""}
+];
 
-<footer>
- PLUS TV © 2026<br>
- Online Television Platform
-</footer>
+let selected="Hamısı";
 
+function filter(country){
+selected=country;
+showChannels();
+}
+
+function play(channel){
+document.getElementById("playing").textContent=channel.name;
+if(channel.url){
+document.getElementById("screen").src=channel.url;
+document.getElementById("status").textContent=
+"Rəsmi yayım səhifəsi açılır. Daxili pleyerdə göstərilməsi yayım saytının icazəsindən asılıdır.";
+}else{
+document.getElementById("status").textContent=
+"Bu kanalın rəsmi canlı yayım ünvanı hələ əlavə edilməyib.";
+}
+}
+
+function showChannels(){
+let q=document.getElementById("search").value.toLowerCase();
+let list=data.filter(c=>
+(selected==="Hamısı"||c.country===selected)&&
+c.name.toLowerCase().includes(q)
+);
+document.getElementById("channels").innerHTML="";
+list.forEach(c=>{
+let div=document.createElement("div");
+div.className="channel";
+div.innerHTML=`<h3>${c.name}</h3>
+<p>${c.country}</p>
+<button>${c.url?"Canlı izlə":"Hazırlanır"}</button>`;
+div.querySelector("button").disabled=!c.url;
+div.querySelector("button").onclick=()=>play(c);
+document.getElementById("channels").appendChild(div);
+});
+}
+showChannels();
+</script>
 </body>
 </html>
