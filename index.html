@@ -18,12 +18,13 @@ input{width:100%;padding:14px;border-radius:10px;border:1px solid #34445b;backgr
 button{background:#087fca;color:white;border:0;padding:12px 16px;border-radius:9px;font-weight:bold}
 button:disabled{background:#465266;color:#bbb}
 .player{background:#111b2c;padding:12px;border-radius:14px;margin:20px 0}
-iframe{width:100%;height:240px;border:0;background:#000;border-radius:10px}
+video{width:100%;height:240px;border:0;background:#000;border-radius:10px}
 .channels{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .channel{background:#172238;padding:16px;border-radius:13px;text-align:center}
 .channel h3{margin:10px 0}
 footer{text-align:center;padding:25px;color:#8295ad}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 <body>
 <header>PLUS <span>TV</span></header>
@@ -36,11 +37,9 @@ footer{text-align:center;padding:25px;color:#8295ad}
 <h2>Canlı televiziya</h2>
 <div class="player">
 <h3 id="playing">Kanal seçin</h3>
-<iframe
-id="screen"
-allow="autoplay; encrypted-media; picture-in-picture"
-allowfullscreen>
-</iframe>
+<video id="screen" controls playsinline autoplay
+style="width:100%;height:240px;background:black;">
+</video>
 <p id="status">İzləmək istədiyiniz kanalı seçin.</p>
 </div>
 
@@ -83,11 +82,39 @@ function filter(country){
   selected = country;
   showChannels();
 }
+let hlsPlayer = null;
 
 function play(channel){
+  const video = document.getElementById("screen");
+
   document.getElementById("playing").textContent = channel.name;
-  document.getElementById("status").textContent =
-    "Bu kanal üçün rəsmi canlı yayım ünvanı əlavə edilməyib.";
+
+  if(hlsPlayer){
+    hlsPlayer.destroy();
+    hlsPlayer = null;
+  }
+
+  video.removeAttribute("src");
+  video.load();
+
+  if(!channel.url){
+    document.getElementById("status").textContent =
+      "Bu kanalın canlı yayım ünvanı əlavə edilməyib.";
+    return;
+  }
+
+  if(Hls.isSupported()){
+    hlsPlayer = new Hls();
+    hlsPlayer.loadSource(channel.url);
+    hlsPlayer.attachMedia(video);
+
+    hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function(){
+      video.play();
+    });
+  } else if(video.canPlayType("application/vnd.apple.mpegurl")){
+    video.src = channel.url;
+    video.play();
+  }
 }
 
 function showChannels(){
