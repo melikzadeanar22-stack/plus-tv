@@ -108,7 +108,10 @@ function play(channel){
     hlsPlayer.attachMedia(video);
     hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function(){
       video.play();
-    });
+    });hlsPlayer.on(Hls.Events.ERROR, function(event, data){
+  document.getElementById("status").textContent =
+    "HLS xətası: " + data.type + " / " + data.details;
+});
   } else if(video.canPlayType("application/vnd.apple.mpegurl")){
     video.src = channel.url;
     video.play();
