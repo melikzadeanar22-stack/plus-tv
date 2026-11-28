@@ -69,7 +69,7 @@ const data = [
 {name:"Mədəniyyət TV",country:"Azərbaycan",url:""},
 {name:"TRT 1",country:"Türkiyə",url:""},
 {name:"TRT Haber",country:"Türkiyə",url:""},
-{name:"Kanal D",country:"Türkiyə",url:"https://www.canlitv.diy/embed/?id=2"}, 
+{name:"Kanal D",country:"Türkiyə",url:"",officialPage:"https://www.kanald.com.tr/canli-yayin"},
 {name:"TRT 2",country:"Türkiyə",url:""},
 {name:"Россия 1",country:"Rusiya",url:"https://live.smotrim.ru/vgtrk/0/russia1-hd/index.m3u8"},
 {name:"РБК",country:"Rusiya",url:""},
@@ -84,8 +84,11 @@ function filter(country){
 }
 let hlsPlayer = null;
 
+
 function play(channel){
   const video = document.getElementById("screen");
+  const frame = document.getElementById("channelFrame");
+
   document.getElementById("playing").textContent = channel.name;
 
   if(hlsPlayer){
@@ -93,8 +96,22 @@ function play(channel){
     hlsPlayer = null;
   }
 
+  video.pause();
   video.removeAttribute("src");
   video.load();
+
+  frame.removeAttribute("src");
+  frame.style.display = "none";
+  video.style.display = "block";
+
+  if(channel.embedUrl || channel.officialPage){
+    video.style.display = "none";
+    frame.style.display = "block";
+    frame.src = channel.embedUrl || channel.officialPage;
+    document.getElementById("status").textContent =
+      "Kanal açılır...";
+    return;
+  }
 
   if(!channel.url){
     document.getElementById("status").textContent =
@@ -106,18 +123,21 @@ function play(channel){
     hlsPlayer = new Hls();
     hlsPlayer.loadSource(channel.url);
     hlsPlayer.attachMedia(video);
+
     hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function(){
       video.play();
-    });hlsPlayer.on(Hls.Events.ERROR, function(event, data){
-  document.getElementById("status").textContent =
-    "HLS xətası: " + data.type + " / " + data.details;
-});
+    });
+
+    hlsPlayer.on(Hls.Events.ERROR, function(event, data){
+      document.getElementById("status").textContent =
+        "HLS xətası: " + data.type + " / " + data.details;
+    });
+
   } else if(video.canPlayType("application/vnd.apple.mpegurl")){
     video.src = channel.url;
     video.play();
   }
 }
-
 function showChannels(){
   const q = document.getElementById("search").value.toLowerCase();
   const list = data.filter(c =>
